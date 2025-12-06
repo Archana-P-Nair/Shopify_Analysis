@@ -13,7 +13,7 @@ This is a multi-tenant Shopify Data Ingestion & Insights Service built with Reac
 
 1.  **Clone the repository**
     ```bash
-    git clone <repo-url>
+    git clone https://github.com/Archana-P-Nair/Shopify_Analysis
     cd xeno-fde-assignment
     ```
 
