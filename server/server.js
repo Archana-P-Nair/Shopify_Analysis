@@ -15,9 +15,7 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const { authenticateToken, JWT_SECRET } = require('./middleware/auth');
 
-// ... (previous imports)
 
-// Auth Routes
 app.post('/api/auth/register', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -48,7 +46,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// Store Management Routes
+
 app.post('/api/stores', authenticateToken, async (req, res) => {
     const { shopDomain, accessToken } = req.body;
     try {
@@ -76,9 +74,9 @@ app.get('/api/stores', authenticateToken, async (req, res) => {
     }
 });
 
-// Middleware to resolve Tenant from Header (Modified for Auth)
+
 app.use(async (req, res, next) => {
-    // Skip for auth routes
+  
     if (req.path.startsWith('/api/auth') || req.path.startsWith('/api/stores')) return next();
 
     const shopDomain = req.headers['x-shop-domain'];
@@ -88,7 +86,7 @@ app.use(async (req, res, next) => {
         const tenant = await prisma.tenant.findUnique({ where: { shopDomain } });
         if (!tenant) return res.status(404).json({ error: 'Tenant not found' });
 
-        req.tenant = tenant; // Attach full tenant object (with accessToken)
+        req.tenant = tenant; 
         req.tenantId = tenant.id;
         next();
     } catch (error) {
@@ -96,9 +94,9 @@ app.use(async (req, res, next) => {
     }
 });
 
-// Real Shopify Ingestion
+
 app.post('/api/ingest', async (req, res) => {
-    const { type } = req.body; // type: 'products' | 'orders' | 'customers'
+    const { type } = req.body;
     const tenant = req.tenant;
 
     if (!tenant.accessToken) {
@@ -184,7 +182,7 @@ app.post('/api/ingest', async (req, res) => {
     }
 });
 
-// Dashboard Stats
+
 app.get('/api/dashboard/stats', async (req, res) => {
     const tenantId = req.tenantId;
 
@@ -206,13 +204,12 @@ app.get('/api/dashboard/stats', async (req, res) => {
     }
 });
 
-// Orders Chart Data (Group by Date)
+
 app.get('/api/dashboard/orders-trend', async (req, res) => {
     const tenantId = req.tenantId;
 
     try {
-        // Prisma doesn't support date grouping natively in SQLite easily without raw query
-        // For simplicity, we'll fetch orders and group in JS (fine for small dataset)
+        
         const orders = await prisma.order.findMany({
             where: { tenantId },
             select: { createdAt: true, totalPrice: true },
@@ -233,7 +230,7 @@ app.get('/api/dashboard/orders-trend', async (req, res) => {
     }
 });
 
-// Export for Vercel
+
 module.exports = app;
 
 if (require.main === module) {
