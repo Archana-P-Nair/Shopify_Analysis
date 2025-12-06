@@ -4,19 +4,19 @@ const prisma = new PrismaClient();
 async function main() {
     const shopDomain = 'demo-store.myshopify.com';
 
-    // Create User
+    
     const user = await prisma.user.upsert({
         where: { email: 'admin@xeno.com' },
         update: {},
         create: {
             email: 'admin@xeno.com',
-            password: 'hashed_password_placeholder', // In real app, hash this
+            password: 'hashed_password_placeholder', 
         },
     });
 
     console.log('Created user:', user.id);
 
-    // Create Tenant
+    
     const tenant = await prisma.tenant.upsert({
         where: { shopDomain },
         update: {},
@@ -29,7 +29,7 @@ async function main() {
 
     console.log('Created tenant:', tenant.id);
 
-    // Create Products
+    
     const products = [
         { shopifyId: '101', title: 'Cool T-Shirt', price: 29.99 },
         { shopifyId: '102', title: 'Awesome Hoodie', price: 49.99 },
@@ -44,7 +44,7 @@ async function main() {
         });
     }
 
-    // Create Customers
+    
     const customers = [
         { shopifyId: '201', email: 'alice@example.com', firstName: 'Alice', lastName: 'Wonder', totalSpent: 150.00 },
         { shopifyId: '202', email: 'bob@example.com', firstName: 'Bob', lastName: 'Builder', totalSpent: 80.00 },
@@ -58,7 +58,7 @@ async function main() {
         });
     }
 
-    // Create Orders
+    
     const orders = [
         { shopifyId: '301', totalPrice: 29.99, createdAt: new Date('2023-10-01'), customerId: '201' },
         { shopifyId: '302', totalPrice: 49.99, createdAt: new Date('2023-10-02'), customerId: '201' },
